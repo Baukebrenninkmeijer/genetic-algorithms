@@ -11,15 +11,10 @@ start_poly_count = 3
 
 
 class Population:
-    def __init__(self, popsize, target_img, keep_n=None):
+    def __init__(self, popsize, target_img):
         self.popsize = popsize
         self.target_img = target_img
         self.individuals = []
-
-        if keep_n is None:
-            self.keep_n = popsize // 2
-        else:
-            self.keep_n = keep_n
 
         for i in range(popsize):
             self.individuals.append(Individual(start_poly_count))
