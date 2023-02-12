@@ -3,3 +3,4 @@ img/**/polygon*.png
 polygon/img/**/*.png
 **/__pycache__
 **/*.png
+**/.ipynb_checkpoints

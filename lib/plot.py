@@ -9,7 +9,16 @@ from IPython.display import clear_output
 plt.rcParams['figure.facecolor'] = 'white'
 
 
-def plot_iteration(pop,  plot_freq: int, out, min_fit: float, i: int, show: bool = True, left_y: List | None = None, right_y: List | None = None):
+def plot_iteration(
+    pop,
+    plot_freq: int,
+    out,
+    min_fit: float,
+    i: int,
+    show: bool = True,
+    left_y: List | None = None,
+    right_y: List | None = None,
+):
     if i % plot_freq == 0 or min_fit < pop.stop_threshold:
         with out:
             clear_output(wait=True)
@@ -39,12 +48,12 @@ def plot_iteration(pop,  plot_freq: int, out, min_fit: float, i: int, show: bool
             ax[2].grid()
 
             ax[3].set_title('Fitness distribution of population.')
-            sns.histplot(x=[x.fitness for x in pop.pop], bins=10, ax=ax[3])
+            sns.histplot(x=[x.fitness for x in pop.pop], bins=20, ax=ax[3])
             ax[3].grid()
             ax[3].set_ylim([0, pop.popsize])
             plt.tight_layout()
             idx = i // plot_freq
-            plt.savefig(fname=pop.img_dir/f'state_{idx:03d}.png', dpi=150)
+            plt.savefig(fname=pop.img_dir / f'state_{idx:03d}.png', dpi=150)
             if show:
                 plt.show()
             else:

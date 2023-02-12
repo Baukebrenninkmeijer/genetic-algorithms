@@ -28,7 +28,7 @@ class Population:
         n_polygons: int = 10,
         mutate_d: float = 0.05,
         mutate_p: float = 0.1,
-        penalty_rate: float =0.05,
+        penalty_rate: float = 0.05,
         add_or_del_p: float = 0.2,
         stop_threshold: float = 0,
     ) -> None:
@@ -39,10 +39,10 @@ class Population:
             raise ValueError(f'Image max colour value should be 1, but is {target.max()}')
 
         assert 0 < popsize < 1e10, f'Popsize is probably too big, namely: {popsize}'
-        assert 0 < mutate_p < 1, f'Mutation chance should be in [0, 1].'
-        assert 0 < mutate_d < 1, f'Mutation chance should be in [0, 1].'
-        assert 0 < sample_top_n < 1, f'Mutation chance should be in [0, 1].'
-        assert 0 < copy_top_perc < 1, f'Mutation chance should be in [0, 1].'
+        assert 0 <= mutate_p <= 1, f'Mutation chance should be in [0, 1].'
+        assert 0 <= mutate_d <= 1, f'Mutation chance should be in [0, 1].'
+        assert 0 <= sample_top_n <= 1, f'Mutation chance should be in [0, 1].'
+        assert 0 <= copy_top_perc <= 1, f'Mutation chance should be in [0, 1].'
 
         self.target = target
         self.mutate_p = mutate_p
@@ -72,12 +72,12 @@ class Population:
 
     def combine(self):
         pairs = list(permutations(self.pop, r=2))
-        sample_pairs = random.choices(pairs, k=self.popsize) # Sample popsize pairs out of all combinations.
+        sample_pairs = random.choices(pairs, k=self.popsize)  # Sample popsize pairs out of all combinations.
         sample_pairs += list(
             permutations(self.pop[: int(len(self.pop) * self.sample_top_n)], r=2)
         )  # Sample 10% of pop out of pairs from the top 10%.
         children = [
-            self.get_best().copy() for _ in range(max(int(self.copy_top_perc * len(self.pop)), 3))
+            self.get_best().copy() for _ in range(max(int(self.copy_top_perc * len(self.pop)), 2))
         ]  # Add 1/80 or 3 to pop, whichever is more.
         children += [x.crossover(y) for (x, y) in sample_pairs]
         self.pop += children
@@ -96,13 +96,15 @@ class Population:
     def get_best(self):
         return self.pop[0]
 
-    def optimize(self, n_iter: int = 1000, plot: bool = True, plot_freq: int = 10, dir_name: str = 'default'):
+    def optimize(
+        self, n_iter: int = 1000, plot: bool = True, plot_freq: int = 10, dir_name: str = 'default', show: bool = False
+    ):
         if plot:
             out = Output()
             display.display(out)
 
         self.output_dir = Path(f'img/{dir_name}')
-        self.img_dir = self.output_dir/'iters'
+        self.img_dir = self.output_dir / 'iters'
         os.makedirs(self.img_dir, exist_ok=True)
 
         self.metrics = pd.DataFrame(columns=["mean", "min", '#polygons'])
@@ -110,15 +112,28 @@ class Population:
         for n in (pbar := tqdm(range(n_iter))):
             fitnesses = [x.fitness for x in self.pop]
 
-            new_metrics = {"mean": np.mean(fitnesses), "min": np.min(fitnesses), '#polygons': len(self.get_best().polygons)}
+            new_metrics = {
+                "mean": np.mean(fitnesses),
+                "min": np.min(fitnesses),
+                '#polygons': len(self.get_best().polygons),
+            }
             self.metrics.loc[n, :] = new_metrics
             # pbar.write("Gen: {n}, Avg: {mean}, Best: {min}".format(n=n, **metrics))
             pbar.set_postfix(new_metrics)
             if plot:
-                plot_iteration(self, plot_freq=plot_freq, out=out, min_fit=new_metrics['min'], i=n, show=True, left_y=['mean', 'min'], right_y = ['#polygons'])
+                plot_iteration(
+                    self,
+                    plot_freq=plot_freq,
+                    out=out,
+                    min_fit=new_metrics['min'],
+                    i=n,
+                    show=show,
+                    left_y=['mean', 'min'],
+                    right_y=['#polygons'],
+                )
             if self.stop_threshold and new_metrics['min'] < self.stop_threshold:
                 pbar.write(f'Early stopping criterion met after {n} iterations. Stopping search and creating gif.')
-                create_gif(src_dir=self.img_dir, fp_out=self.output_dir/'training.gif')
+                create_gif(src_dir=self.img_dir, fp_out=self.output_dir / 'training.gif')
                 break
 
             self.next_gen()
