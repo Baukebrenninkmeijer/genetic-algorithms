@@ -1,21 +1,11 @@
-# created by Sijmen van der Willik
-# 2019-06-05 18:56
-
 import copy
-
-import cv2
-import numpy as np
-import matplotlib.pyplot as plt
 from typing import Tuple
 
+import cv2
+import matplotlib.pyplot as plt
+import numpy as np
+
 np.set_printoptions(precision=3, suppress=True)
-
-# poly_mutate_chance = 0.2
-# poly_part_mutate_chance = 0.1
-# deletion_p = 0.02
-# addition_p = 0.08
-# penalty_f = 0.05
-
 
 class Polygon:
     def __init__(
@@ -164,7 +154,6 @@ class Individual:
         self.polygons.sort(key=lambda x: x.size, reverse=True)
 
         canvas = np.ones(self.canvas_size, dtype=np.float32)
-        # canvas += 1
 
         for polygon in self.polygons:
             pts = np.array(polygon.coords, dtype=np.int32)

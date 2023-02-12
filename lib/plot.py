@@ -1,11 +1,13 @@
 from __future__ import annotations
-import numpy as np
-import matplotlib.pyplot as plt
-from IPython.display import clear_output
-from ipywidgets import Output
-from IPython import display
-import seaborn as sns
+
 from typing import List
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+from IPython.display import clear_output
+
+plt.rcParams['figure.facecolor'] = 'white'
+
 
 def plot_iteration(pop,  plot_freq: int, out, min_fit: float, i: int, show: bool = True, left_y: List | None = None, right_y: List | None = None):
     if i % plot_freq == 0 or min_fit < pop.stop_threshold:
@@ -18,21 +20,23 @@ def plot_iteration(pop,  plot_freq: int, out, min_fit: float, i: int, show: bool
             ax[1].imshow(pop.target)
             ax[1].set_title('Target')
 
-            ax[2].set_title("MSE", fontsize=20)
-            ax[2].grid()
+            ax[2].set_title("MSE")
             ax[2].set_xlabel('# iterations')
             ax[2].set_ylabel('Loss')
             if left_y is None:
                 sns.lineplot(data=pop.metrics, ax=ax[2])
                 ax[2].legend()
-            elif left_y is not None:
+            elif left_y is not None and right_y is None:
                 pop.metrics.plot(y=left_y, ax=ax[2], legend=False)
-            elif right_y is not None:
+                ax[2].legend()
+            elif left_y is not None and right_y is not None:
                 # pop.metrics.plot(y=left_y, ax=ax[2], legend=False)
+                pop.metrics.plot(y=left_y, ax=ax[2], legend=False)
                 ax22 = ax[2].twinx()
                 ax22.set_ylabel('# polygons in top candidate')
                 pop.metrics.plot(y=right_y, ax=ax22, legend=False, color='g', linestyle='dashed')
-                ax[2].figure.legend(bbox_to_anchor=(0.68, 0.9), title='Metric')
+                ax[2].figure.legend(bbox_to_anchor=(0.68, 0.85), title='Metric')
+            ax[2].grid()
 
             ax[3].set_title('Fitness distribution of population.')
             sns.histplot(x=[x.fitness for x in pop.pop], bins=10, ax=ax[3])

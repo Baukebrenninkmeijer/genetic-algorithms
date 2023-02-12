@@ -1,0 +1,41 @@
+[tool.isort]
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+line_length = 120
+
+[tool.coverage.report]
+fail_under = 0
+show_missing = true
+exclude_lines = ["pragma: no cover", "raise NotImplementedError"]
+
+[tool.pylint.messages_control]
+disable = [
+    'too-many-arguments',
+    'logging-fstring-interpolation',
+]
+
+[tool.pylint.basic]
+argument-naming-style = "snake_case"
+attr-naming-style = "snake_case"
+class-naming-style = "PascalCase"
+const-naming-style = "UPPER_CASE"
+function-naming-style = "snake_case"
+variable-naming-style = "snake_case"
+include-naming-hint = "yes"
+good-names = ["i", "j", "k", "v", "df", "s", "n", "q", "db", "y", "e", "x"]
+fail-under = 6
+jobs = 0
+
+[tool.pylint.format]
+max-line-length = 120
+indent-after-paren = 4
+indent-string='    '
+
+[tool.black]
+skip-string-normalization = true
+line-length = 120
+
+[[tool.mypy.overrides]]
+ignore_missing_imports = true
