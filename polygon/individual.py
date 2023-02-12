@@ -179,7 +179,9 @@ class Individual:
             cv2.addWeighted(overlay, alpha, output, 1 - alpha, 0, canvas)
 
         self.img = canvas
-        return canvas
+
+    def get_image(self) -> np.ndarray:
+        return self.img
 
     def copy(self):
         return copy.deepcopy(self)

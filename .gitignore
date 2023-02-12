@@ -2,3 +2,4 @@ img/**/state_*.png
 img/**/polygon*.png
 polygon/img/**/*.png
 **/__pycache__
+**/*.png
