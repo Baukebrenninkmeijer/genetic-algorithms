@@ -47,7 +47,6 @@ class Polygon:
                 coord[1] = np.clip(coord[1], 0, self.y_size)
 
         if self.mutate_p > np.random.random():
-            changed = True
             self.color += (np.random.random(self.color_c) * self.mutate_d) - (self.mutate_d * 0.5)
             self.color = np.clip(self.color, 0, 1)
 
