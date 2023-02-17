@@ -58,3 +58,9 @@ def plot_iteration(
                 plt.show()
             else:
                 plt.close()
+
+            # plt.figure()
+            plt.imshow(pop.get_best().get_image())
+            # plt.imsave(fname=pop.img_dir / f'top_cand_{idx:03d}.png', arr=pop.get_best().get_image())
+            plt.savefig(fname=pop.img_dir / f'top_cand_{idx:03d}.png', dpi=90)
+            plt.close()

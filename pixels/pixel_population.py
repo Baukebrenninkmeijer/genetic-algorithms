@@ -30,22 +30,21 @@ class Population:
         copy_top_perc=0.02,
         stop_threshold: float = -1,
     ):
-        assert 0 < popsize < 1e10, f'Popsize is probably too big, namely: {popsize}'
-        assert 0 < mutation_prob < 1, f'Mutation chance should be in [0, 1].'
-        assert 0 < mutation_delta < 1, f'Mutation chance should be in [0, 1].'
-        assert 0 < sample_top_n < 1, f'Mutation chance should be in [0, 1].'
-        assert 0 < copy_top_perc < 1, f'Mutation chance should be in [0, 1].'
+        assert 0 <= popsize < 1e10, f'Popsize is probably too big, namely: {popsize}'
+        assert 0 <= mutation_prob <= 1, f'Mutation chance should be in [0, 1].'
+        assert 0 <= mutation_delta <= 1, f'Mutation chance should be in [0, 1].'
+        assert 0 <= sample_top_n <= 1, f'Mutation chance should be in [0, 1].'
+        assert 0 <= copy_top_perc <= 1, f'Mutation chance should be in [0, 1].'
 
         self.popsize = popsize
         self.target = target
-        self.start_mutation_delta = mutation_delta
-        self.mutation_delta = mutation_delta
+        self.start_mutation_delta = self.mutation_delta = mutation_delta
         self.mutation_prob = mutation_prob
         self.sample_top_n = sample_top_n
         self.stop_threshold = stop_threshold
         self.copy_top_perc = copy_top_perc
         self.pop = [
-            PixelIndividual(shape=self.target.shape, mutate_change=mutation_delta, mutate_prob=mutation_prob)
+            PixelIndividual(shape=self.target.shape, mutate_d=mutation_delta, mutate_p=mutation_prob)
             for _ in range(popsize)
         ]
         self.calculate_fitness()
@@ -60,20 +59,21 @@ class Population:
 
     def crossover_pop(self):
         pairs = list(permutations(self.pop, r=2))
-        sample_pairs = random.choices(pairs, k=self.popsize)  # Sample popsize pairs out of all combinations.
-        sample_pairs += list(
-            permutations(self.pop[: int(len(self.pop) * self.sample_top_n)], r=2)
-        )  # Sample 10% of pop out of pairs from the top 10%.
+        sample_pairs = random.choices(pairs, k=self.popsize)
+        sample_pairs += random.choices(
+            list(permutations(self.pop[: int(len(self.pop) * self.sample_top_n)], r=2)),
+            k=self.popsize
+        )
         children = [
-            self.pop[0].copy() for _ in range(max(int(self.copy_top_perc * len(self.pop)), 3))
-        ]  # Add 1/80 or 3 to pop, whichever is more.
+            self.pop[0].copy() for _ in range(int(self.copy_top_perc * len(self.pop)))
+        ]
         children += [x.crossover(y) for (x, y) in sample_pairs]
         self.pop += children
 
     def adjust_mutation_delta(self, total_epochs, iteration):
         self.mutate_delta = max(self.start_mutation_delta * ((total_epochs - iteration) / total_epochs), self.start_mutation_delta / 10)
         for i in self.pop:
-            i.mutate_change = self.mutate_delta
+            i.mutate_d = self.mutate_delta
 
     def mutate_pop(self) -> None:
         for i in self.pop:
@@ -98,7 +98,8 @@ class Population:
             self.mutate_pop()
             self.calculate_fitness()
             self.sort_population()
-            self.pop = self.pop[: self.popsize]
+            self.pop = self.pop[:self.popsize]
+            self.adjust_mutation_delta(total_epochs=epochs, iteration=i)
             current_best_fitness = self.pop[0].fitness
             if current_best_fitness < min_fitness:
                 min_fitness = current_best_fitness
