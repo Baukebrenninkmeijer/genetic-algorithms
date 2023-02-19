@@ -43,9 +43,7 @@ class Population:
         self.stop_threshold = stop_threshold
         self.copy_top_perc = copy_top_perc
         self.pop = [
-            PixelIndividual(
-                shape=self.target.shape, mutate_d=mutation_delta, mutate_p=mutation_prob
-            )
+            PixelIndividual(shape=self.target.shape, mutate_d=mutation_delta, mutate_p=mutation_prob)
             for _ in range(popsize)
         ]
         self.calculate_fitness()
@@ -65,9 +63,7 @@ class Population:
             list(permutations(self.pop[: int(len(self.pop) * self.sample_top_n)], r=2)),
             k=self.popsize,
         )
-        children = [
-            self.pop[0].copy() for _ in range(int(self.copy_top_perc * len(self.pop)))
-        ]
+        children = [self.pop[0].copy() for _ in range(int(self.copy_top_perc * len(self.pop)))]
         children += [x.crossover(y) for (x, y) in sample_pairs]
         self.pop += children
 
@@ -143,12 +139,8 @@ class Population:
                     show=show,
                 )
             if current_best_fitness < self.stop_threshold:
-                pbar.write(
-                    f'Early stopping criterion met after {i} iterations. Stopping search and creating gif.'
-                )
-                create_gif(
-                    src_dir=self.img_dir, fp_out=self.output_dir / 'training.gif'
-                )
+                pbar.write(f'Early stopping criterion met after {i} iterations. Stopping search and creating gif.')
+                create_gif(src_dir=self.img_dir, fp_out=self.output_dir / 'training.gif')
                 break
 
     def __repr__(self):

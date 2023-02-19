@@ -34,21 +34,15 @@ class PixelIndividual:
         filter = np.random.randint(low=0, high=2, size=self.genes.shape)
         output = np.where(filter, self.genes, other.genes)
         return PixelIndividual(shape=self.shape, genes=output)
-        return PixelIndividual(
-            shape=self.shape, genes=np.mean([self.genes, other.genes], axis=0)
-        )
+        return PixelIndividual(shape=self.shape, genes=np.mean([self.genes, other.genes], axis=0))
 
     def mutate(self):
         if self.mutate_p > np.random.rand():
-            self.mutation = (
-                (np.random.rand(*self.shape) * self.mutate_d) - (self.mutate_d * 0.5)
-            ).astype(np.float32)
+            self.mutation = ((np.random.rand(*self.shape) * self.mutate_d) - (self.mutate_d * 0.5)).astype(np.float32)
             self.genes = np.clip(self.genes + self.mutation, a_min=0.0, a_max=1.0)
 
     def compute_fitness(self, target):
-        assert (
-            self.genes.dtype.name == 'float32'
-        ), f'genes dtype should be float32 but found {self.genes.dtype.name}.'
+        assert self.genes.dtype.name == 'float32', f'genes dtype should be float32 but found {self.genes.dtype.name}.'
         self.fitness = ((self.genes - target) ** 2).mean()
 
     def copy(self) -> PixelIndividual:
@@ -58,6 +52,4 @@ class PixelIndividual:
         return self.genes
 
     def __repr__(self):
-        return (
-            f'{self.__class__.__name__}(shape={self.shape}, fitness={self.fitness:.4f})'
-        )
+        return f'{self.__class__.__name__}(shape={self.shape}, fitness={self.fitness:.4f})'

@@ -38,19 +38,15 @@ class Polygon:
         for coord in self.coords:
             if self.mutate_p > np.random.random():
                 changed = True
-                coord[0] += np.random.randint(
-                    0, int(self.x_size * self.mutate_d)
-                ) - int(self.x_size * self.mutate_d * 0.5)
-                coord[0] = np.clip(coord[0], 0, self.x_size)
-                coord[1] += np.random.randint(0, self.y_size * self.mutate_d) - (
-                    self.y_size * self.mutate_d * 0.5
+                coord[0] += np.random.randint(0, int(self.x_size * self.mutate_d)) - int(
+                    self.x_size * self.mutate_d * 0.5
                 )
+                coord[0] = np.clip(coord[0], 0, self.x_size)
+                coord[1] += np.random.randint(0, self.y_size * self.mutate_d) - (self.y_size * self.mutate_d * 0.5)
                 coord[1] = np.clip(coord[1], 0, self.y_size)
 
         if self.mutate_p > np.random.random():
-            self.color += (np.random.random(self.color_c) * self.mutate_d) - (
-                self.mutate_d * 0.5
-            )
+            self.color += (np.random.random(self.color_c) * self.mutate_d) - (self.mutate_d * 0.5)
             self.color = np.clip(self.color, 0, 1)
 
         if changed:
