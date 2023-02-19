@@ -39,10 +39,10 @@ class Population:
             raise ValueError(f'Image max colour value should be 1, but is {target.max()}')
 
         assert 0 < popsize < 1e10, f'Popsize is probably too big, namely: {popsize}'
-        assert 0 <= mutate_p <= 1, f'Mutation chance should be in [0, 1].'
-        assert 0 <= mutate_d <= 1, f'Mutation chance should be in [0, 1].'
-        assert 0 <= sample_top_n <= 1, f'Mutation chance should be in [0, 1].'
-        assert 0 <= copy_top_perc <= 1, f'Mutation chance should be in [0, 1].'
+        assert 0 <= mutate_p <= 1, 'Mutation chance should be in [0, 1].'
+        assert 0 <= mutate_d <= 1, 'Mutation chance should be in [0, 1].'
+        assert 0 <= sample_top_n <= 1, 'Mutation chance should be in [0, 1].'
+        assert 0 <= copy_top_perc <= 1, 'Mutation chance should be in [0, 1].'
 
         self.target = target
         self.mutate_p = mutate_p

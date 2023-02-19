@@ -6,7 +6,6 @@ from lib.plot import plot_iteration
 from lib.gif import create_gif
 from pixel_individual import PixelIndividual
 import numpy as np
-import matplotlib.pyplot as plt
 import random
 from itertools import permutations
 from tqdm.auto import tqdm
@@ -31,10 +30,10 @@ class Population:
         stop_threshold: float = -1,
     ):
         assert 0 <= popsize < 1e10, f'Popsize is probably too big, namely: {popsize}'
-        assert 0 <= mutation_prob <= 1, f'Mutation chance should be in [0, 1].'
-        assert 0 <= mutation_delta <= 1, f'Mutation chance should be in [0, 1].'
-        assert 0 <= sample_top_n <= 1, f'Mutation chance should be in [0, 1].'
-        assert 0 <= copy_top_perc <= 1, f'Mutation chance should be in [0, 1].'
+        assert 0 <= mutation_prob <= 1, 'Mutation chance should be in [0, 1].'
+        assert 0 <= mutation_delta <= 1, 'Mutation chance should be in [0, 1].'
+        assert 0 <= sample_top_n <= 1, 'Mutation chance should be in [0, 1].'
+        assert 0 <= copy_top_perc <= 1, 'Mutation chance should be in [0, 1].'
 
         self.popsize = popsize
         self.target = target
@@ -83,7 +82,7 @@ class Population:
         return self.pop[0]
 
     def optimize(
-        self, epochs: int, plot_frequency: int = 20, name: str = 'default', plot: bool = False, show: bool = False
+        self, epochs: int, plot_frequency: int = 20, name: str = 'default', plot: bool = False, show: bool = False, adjust_delta: bool = False
     ):
         self.metrics = pd.DataFrame(columns=['min_loss', 'mean_loss'])
         self.output_dir = Path(f'img/{name}')

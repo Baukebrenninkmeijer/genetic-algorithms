@@ -36,7 +36,6 @@ class Polygon:
     def mutate(self):
         changed = False
         for coord in self.coords:
-            copy_ = coord[:]
             if self.mutate_p > np.random.random():
                 changed = True
                 coord[0] += np.random.randint(0, int(self.x_size * self.mutate_d)) - int(

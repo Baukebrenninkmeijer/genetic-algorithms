@@ -1,7 +1,4 @@
 from __future__ import annotations
-import sys
-
-sys.path.append('..')
 import numpy as np
 from typing import Tuple
 import matplotlib.pyplot as plt
