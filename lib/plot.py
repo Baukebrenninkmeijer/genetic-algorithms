@@ -43,7 +43,9 @@ def plot_iteration(
                 pop.metrics.plot(y=left_y, ax=ax[2], legend=False)
                 ax22 = ax[2].twinx()
                 ax22.set_ylabel('# polygons in top candidate')
-                pop.metrics.plot(y=right_y, ax=ax22, legend=False, color='g', linestyle='dashed')
+                pop.metrics.plot(
+                    y=right_y, ax=ax22, legend=False, color='g', linestyle='dashed'
+                )
                 ax[2].figure.legend(bbox_to_anchor=(0.68, 0.85), title='Metric')
             ax[2].grid()
 

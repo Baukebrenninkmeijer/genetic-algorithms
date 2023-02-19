@@ -21,5 +21,12 @@ def create_gif(src_dir, fp_out: str):
     with contextlib.ExitStack() as stack:
         imgs = (stack.enter_context(Image.open(f)) for f in file_paths)
         img = next(imgs)
-        img.save(fp=fp_out, format='GIF', append_images=imgs, save_all=True, duration=100, loop=0)
+        img.save(
+            fp=fp_out,
+            format='GIF',
+            append_images=imgs,
+            save_all=True,
+            duration=100,
+            loop=0,
+        )
     print(f'Image saved at {fp_out}.')

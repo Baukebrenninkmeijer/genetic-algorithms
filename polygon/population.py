@@ -34,9 +34,13 @@ class Population:
     ) -> None:
         self.popsize = popsize
         if target.min() < 0:
-            raise ValueError(f'No colour values in target image should be under 0. Found min: {target.min()}')
+            raise ValueError(
+                f'No colour values in target image should be under 0. Found min: {target.min()}'
+            )
         if target.max() > 1:
-            raise ValueError(f'Image max colour value should be 1, but is {target.max()}')
+            raise ValueError(
+                f'Image max colour value should be 1, but is {target.max()}'
+            )
 
         assert 0 < popsize < 1e10, f'Popsize is probably too big, namely: {popsize}'
         assert 0 <= mutate_p <= 1, 'Mutation chance should be in [0, 1].'
@@ -72,12 +76,15 @@ class Population:
 
     def combine(self):
         pairs = list(permutations(self.pop, r=2))
-        sample_pairs = random.choices(pairs, k=self.popsize)  # Sample popsize pairs out of all combinations.
+        sample_pairs = random.choices(
+            pairs, k=self.popsize
+        )  # Sample popsize pairs out of all combinations.
         sample_pairs += list(
             permutations(self.pop[: int(len(self.pop) * self.sample_top_n)], r=2)
         )  # Sample 10% of pop out of pairs from the top 10%.
         children = [
-            self.get_best().copy() for _ in range(max(int(self.copy_top_perc * len(self.pop)), 2))
+            self.get_best().copy()
+            for _ in range(max(int(self.copy_top_perc * len(self.pop)), 2))
         ]  # Add 1/80 or 3 to pop, whichever is more.
         children += [x.crossover(y) for (x, y) in sample_pairs]
         self.pop += children
@@ -97,7 +104,12 @@ class Population:
         return self.pop[0]
 
     def optimize(
-        self, n_iter: int = 1000, plot: bool = True, plot_freq: int = 10, dir_name: str = 'default', show: bool = False
+        self,
+        n_iter: int = 1000,
+        plot: bool = True,
+        plot_freq: int = 10,
+        dir_name: str = 'default',
+        show: bool = False,
     ):
         if plot:
             out = Output()
@@ -132,8 +144,12 @@ class Population:
                     right_y=['#polygons'],
                 )
             if self.stop_threshold and new_metrics['min'] < self.stop_threshold:
-                pbar.write(f'Early stopping criterion met after {n} iterations. Stopping search and creating gif.')
-                create_gif(src_dir=self.img_dir, fp_out=self.output_dir / 'training.gif')
+                pbar.write(
+                    f'Early stopping criterion met after {n} iterations. Stopping search and creating gif.'
+                )
+                create_gif(
+                    src_dir=self.img_dir, fp_out=self.output_dir / 'training.gif'
+                )
                 break
 
             self.next_gen()
@@ -156,7 +172,11 @@ def main():
         for ind in pop.pop:
             fitnesses.append(ind.fitness)
 
-        print("Gen: {}, Avg: {}, Best: {}".format(n, np.average(fitnesses).astype(int), np.min(fitnesses)))
+        print(
+            "Gen: {}, Avg: {}, Best: {}".format(
+                n, np.average(fitnesses).astype(int), np.min(fitnesses)
+            )
+        )
         pop.next_gen()
 
     cv2.imwrite("./result.png", pop.get_best().img)

@@ -43,7 +43,9 @@ class Population:
         self.stop_threshold = stop_threshold
         self.copy_top_perc = copy_top_perc
         self.pop = [
-            PixelIndividual(shape=self.target.shape, mutate_d=mutation_delta, mutate_p=mutation_prob)
+            PixelIndividual(
+                shape=self.target.shape, mutate_d=mutation_delta, mutate_p=mutation_prob
+            )
             for _ in range(popsize)
         ]
         self.calculate_fitness()
@@ -61,7 +63,7 @@ class Population:
         sample_pairs = random.choices(pairs, k=self.popsize)
         sample_pairs += random.choices(
             list(permutations(self.pop[: int(len(self.pop) * self.sample_top_n)], r=2)),
-            k=self.popsize
+            k=self.popsize,
         )
         children = [
             self.pop[0].copy() for _ in range(int(self.copy_top_perc * len(self.pop)))
@@ -70,7 +72,10 @@ class Population:
         self.pop += children
 
     def adjust_mutation_delta(self, total_epochs, iteration):
-        self.mutate_delta = max(self.start_mutation_delta * ((total_epochs - iteration) / total_epochs), self.start_mutation_delta / 10)
+        self.mutate_delta = max(
+            self.start_mutation_delta * ((total_epochs - iteration) / total_epochs),
+            self.start_mutation_delta / 10,
+        )
         for i in self.pop:
             i.mutate_d = self.mutate_delta
 
@@ -82,7 +87,13 @@ class Population:
         return self.pop[0]
 
     def optimize(
-        self, epochs: int, plot_frequency: int = 20, name: str = 'default', plot: bool = False, show: bool = False, adjust_delta: bool = False
+        self,
+        epochs: int,
+        plot_frequency: int = 20,
+        name: str = 'default',
+        plot: bool = False,
+        show: bool = False,
+        adjust_delta: bool = False,
     ):
         self.metrics = pd.DataFrame(columns=['min_loss', 'mean_loss'])
         self.output_dir = Path(f'img/{name}')
@@ -97,7 +108,7 @@ class Population:
             self.mutate_pop()
             self.calculate_fitness()
             self.sort_population()
-            self.pop = self.pop[:self.popsize]
+            self.pop = self.pop[: self.popsize]
             self.adjust_mutation_delta(total_epochs=epochs, iteration=i)
             current_best_fitness = self.pop[0].fitness
             if current_best_fitness < min_fitness:
@@ -114,15 +125,30 @@ class Population:
 
             # Logging and viz.
             pbar.set_postfix(
-                {'Max': f'{max_fitness:.1f}', 'Min': f'{min_fitness:.3f}', 'current': f'{current_best_fitness:.3f}'}
+                {
+                    'Max': f'{max_fitness:.1f}',
+                    'Min': f'{min_fitness:.3f}',
+                    'current': f'{current_best_fitness:.3f}',
+                }
             )
             pbar.refresh()
 
             if plot:
-                plot_iteration(self, plot_freq=plot_frequency, out=out, min_fit=min_fitness, i=i, show=show)
+                plot_iteration(
+                    self,
+                    plot_freq=plot_frequency,
+                    out=out,
+                    min_fit=min_fitness,
+                    i=i,
+                    show=show,
+                )
             if current_best_fitness < self.stop_threshold:
-                pbar.write(f'Early stopping criterion met after {i} iterations. Stopping search and creating gif.')
-                create_gif(src_dir=self.img_dir, fp_out=self.output_dir / 'training.gif')
+                pbar.write(
+                    f'Early stopping criterion met after {i} iterations. Stopping search and creating gif.'
+                )
+                create_gif(
+                    src_dir=self.img_dir, fp_out=self.output_dir / 'training.gif'
+                )
                 break
 
     def __repr__(self):
