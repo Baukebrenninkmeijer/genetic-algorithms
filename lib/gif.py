@@ -14,7 +14,7 @@ def create_gif(src_dir, fp_out: str):
         raise ValueError(f'Output file should end in ".gif" but got {fp_out}')
 
     # use exit stack to automatically close opened images
-    file_paths = sorted(list(Path(src_dir).glob('*.png')))
+    file_paths = sorted(list(Path(src_dir).glob('state_*.png')))
     if len(file_paths) == 0:
         raise FileNotFoundError('File path list is empty.')
     file_paths += [file_paths[-1] for _ in range(20)]
