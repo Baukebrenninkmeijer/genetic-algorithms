@@ -21,10 +21,8 @@ class PixelIndividual:
         self.shape = shape
         self.mutate_d = mutate_d
         self.mutate_p = mutate_p
-        if genes is None:
-            self.genes = (np.random.rand(*shape)).astype(np.float32)
-        else:
-            self.genes = genes
+        self.genes = (np.random.rand(*shape)).astype(np.float32) if not genes else genes
+
 
     def show(self):
         plt.imshow(self.genes)

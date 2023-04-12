@@ -72,13 +72,15 @@ class Population:
 
     def combine(self):
         pairs = list(permutations(self.pop, r=2))
-        sample_pairs = random.choices(pairs, k=self.popsize)  # Sample popsize pairs out of all combinations.
-        sample_pairs += list(
-            permutations(self.pop[: int(len(self.pop) * self.sample_top_n)], r=2)
-        )  # Sample 10% of pop out of pairs from the top 10%.
-        children = [
-            self.get_best().copy() for _ in range(max(int(self.copy_top_perc * len(self.pop)), 2))
-        ]  # Add 1/80 or 3 to pop, whichever is more.
+        sample_pairs = random.choices(
+            pairs, k=self.popsize
+        )  # Sample popsize pairs out of all combinations. N out of N*(N-1)
+
+        # sample all permutations in the sample_top_n percent of the population.
+        sample_pairs += list(permutations(self.pop[: int(len(self.pop) * self.sample_top_n)], r=2))
+
+        # Create copies of the copy_top_perc fraction of the population
+        children = [self.get_best().copy() for _ in range(max(int(self.copy_top_perc * len(self.pop)), 2))]
         children += [x.crossover(y) for (x, y) in sample_pairs]
         self.pop += children
 
@@ -142,30 +144,3 @@ class Population:
                 break
 
             self.next_gen()
-
-
-def main():
-    target = cv2.imread("../targets/rick.jpg")
-    target = cv2.resize(target, (200, 200))
-    pop = Population(popsize=100, target=target)
-
-    n_gen = 2000
-
-    for n in range(n_gen):
-        cv2.imwrite(
-            "./out/out_{:3<0}_{:6<0}.png".format(n, pop.get_best().fitness // 1),
-            pop.get_best().img,
-        )
-
-        fitnesses = []
-        for ind in pop.pop:
-            fitnesses.append(ind.fitness)
-
-        print("Gen: {}, Avg: {}, Best: {}".format(n, np.average(fitnesses).astype(int), np.min(fitnesses)))
-        pop.next_gen()
-
-    cv2.imwrite("./result.png", pop.get_best().img)
-
-
-if __name__ == "__main__":
-    main()

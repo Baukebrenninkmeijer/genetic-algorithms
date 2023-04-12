@@ -42,7 +42,7 @@ class Polygon:
                     self.x_size * self.mutate_d * 0.5
                 )
                 coord[0] = np.clip(coord[0], 0, self.x_size)
-                coord[1] += np.random.randint(0, self.y_size * self.mutate_d) - (self.y_size * self.mutate_d * 0.5)
+                coord[1] += np.random.randint(0, int(self.y_size * self.mutate_d)) - int(self.y_size * self.mutate_d * 0.5)
                 coord[1] = np.clip(coord[1], 0, self.y_size)
 
         if self.mutate_p > np.random.random():

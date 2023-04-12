@@ -1,5 +1,6 @@
 import os
 from PIL import Image
+from tqdm import trange
 
 def resize_gif(path, save_as=None, resize_to=None):
     """
@@ -70,9 +71,10 @@ def extract_and_resize_frames(path, resize_to=None):
     all_frames = []
 
     try:
-        while True:
+        for i in trange(im.n_frames):
             # print("saving %s (%s) frame %d, %s %s" % (path, mode, i, im.size, im.tile))
-
+            if i % 3 == 0:
+                pass
             '''
             If the GIF uses local colour tables, each frame will have its own palette.
             If not, we need to apply the global palette to the new frame.
@@ -103,4 +105,6 @@ def extract_and_resize_frames(path, resize_to=None):
     return all_frames
 
 if __name__ == '__main__':
-    resize_gif(path='pixels/img/gradient/gradient_training.gif', save_as='pixels/img/gradient/gradient_training_optimized.gif')
+    resize_gif(path='pixels/img/mario2/mario_training.gif', save_as='pixels/img/mario2/mario_training_optimized.gif', resize_to=(1000, 250))
+    import subprocess
+    subprocess.run(['gifsicle', '-O2', '--lossy=80', '--colors=256', 'pixels/img/mario2/mario_training_optimized.gif', '-o',  'pixels/img/mario2/mario_training_optimized_compressed.gif'])
